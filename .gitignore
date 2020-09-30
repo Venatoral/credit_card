@@ -1,3 +1,6 @@
+# directoris
 .idea/
-*.csv
 data/
+# useless files
+*.csv
+*.tmp
