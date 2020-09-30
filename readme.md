@@ -17,7 +17,6 @@
 | CNT_CHILDREN        | 孩子个数       |INT                                                |
 | AMT_INCOME_TOTAL    | 年收入         |INT                                                |
 | NAME_INCOME_TYPE    | 收入类别       | <p>Working : 打工收入<br/>Commercial associate : 经商收入<br/>Pensioner : 养老金<br/>State servant : 公务员收入<br/>Student : 学生零花钱</p>
-* **NAME_EDUCATION_TYPE : 受教育程度**                                                |
 | NAME_EDUCATION_TYPE | 教育程度       |<p>Higher education : 受过高等教育(本科以上)<br/>Secondary / secondary special : 高中/大专<br/>Incomplete higher : 受过高等教育，未毕业(本科辍学)<br/>Lower secondary : 初中<br/>Lower secondary : 初中</p>                                                |
 | NAME_FAMILY_STATUS  | 婚姻状态       | <p>Married : 已结婚<br/>Single / not married : 单身/未结婚<br/>Civil marriage : 已订婚<br/>Separated : 离异<br/>Widow : 丧偶</p>                                                |
 | NAME_HOUSING_TYPE   | 居住方式       |<p>House / apartment : 住在自己的房屋,公寓<br/>With parents : 和父母一起居住<br/>Municipal apartment : 住在市政公寓<br/>Rented apartment : 租房子住<br/>Office apartment : 办公公寓/员工宿舍</p>                                                |
