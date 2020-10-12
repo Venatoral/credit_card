@@ -26,13 +26,27 @@ class Net(torch.nn.Module):
 
 
 net = Net(n_features, n_hidden, n_output)
-print('bpNewInfo:', net)
+print('bpNeuralNetworksInfo:', net)
 optimizer = torch.optim.SGD(net.parameters(), lr=0.02)
 loss_func = torch.nn.CrossEntropyLoss()
 # plt.ion()
 accList = []
+oneRecallList = []
+zeroRecallList = []
 iterTimes = []
-maxIter = 300
+maxIter = 30
+target_result = resultTensor.data.numpy()
+oneIndex = []
+zeroIndex = []
+for index in range(len(target_result)):
+    if target_result[index] == 1:
+        oneIndex.append(index)
+    else:
+        zeroIndex.append(index)
+
+target_result_one = np.delete(target_result, zeroIndex)
+target_result_zero = np.delete(target_result, oneIndex)
+
 for t in range(maxIter):
     out = net(dataTensor.float())
     loss = loss_func(out, resultTensor.long())
@@ -41,15 +55,35 @@ for t in range(maxIter):
     optimizer.step()
     if t % 2 == 0:
         prediction = torch.max(out, 1)[1]
+        print(prediction)
         pred_result = prediction.data.numpy()
-        target_result = resultTensor.data.numpy()
         accuracy = float((pred_result == target_result).astype(
             int).sum()) / float(target_result.size)
+        one_recall = float((np.delete(pred_result, zeroIndex) == target_result_one).astype(
+            int).sum()) / float(target_result_one.size)
+        zero_recall = float((np.delete(pred_result, oneIndex) == target_result_zero).astype(
+            int).sum()) / float(target_result_zero.size)
         accList.append(accuracy)
+        oneRecallList.append(one_recall)
+        zeroRecallList.append(zero_recall)
         iterTimes.append(t)
-itemNpArray = np.array(iterTimes)
+
+
+iterNpArray = np.array(iterTimes)
+####准确率曲线####
 accNpArray = np.array(accList)
-plt.plot(itemNpArray, accNpArray)
+plt.plot(iterNpArray, accNpArray,label='accRate')
+
+###信誉用户判断结果的召回率###
+oneRecallNpArray = np.array(oneRecallList)
+plt.plot(iterNpArray, oneRecallNpArray,label='TrustedUserRecallRate')
+
+
+###失信用户判断结果的召回率###
+zeroRecallNpArray = np.array(zeroRecallList)
+plt.plot(iterNpArray, zeroRecallNpArray,label='UntrustworthyUserRecallUser')
+
+plt.legend(loc = 'upper right')
 plt.xlabel('iterTimes')
-plt.ylabel('accRate')
+plt.ylabel('rateValue')
 plt.show()
