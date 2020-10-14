@@ -1,6 +1,8 @@
 # directoris
 .idea/
 data/
+.ipynb_checkpoints
+
 # useless files
 *.csv
 *.tmp
