@@ -1,15 +1,17 @@
+from os import path
 from typing import Tuple
 import pandas as pd
 import torch
+import numpy as np
+from typing import Tuple
+from imblearn.combine import SMOTEENN
+import torch
+import os
+from sklearn.model_selection import train_test_split
 
-################进行编码并且将数据集划分为结果集和特征集###################
+################进行编码并且将数据集划分为结果集和测试集###################
 
-## TODO: 进行特征工程，筛选特征
-
-# 此处我将处理好的数据集改名为了merged_data.csv
-absolutePath = '../data/merged_data.csv'
-
-# 编码规则如下:
+# 普通硬编码规则
 transCodingDict = {
     'M': 0,
     'F': 1,
@@ -53,27 +55,77 @@ transCodingDict = {
     'Waiters/barmen staff': 14,
     'HR staff': 15,
     'Realty agents': 16,
-    'IT staff': 17
+    'IT staff': 17,
+    'Unknown': 18,
+    'more': 3,
+    # 不知道为什么有部分的数字为字符串形式，此处需要转换为相应的数字
+    '0': 0,
+    '1.0': 1,
+    '1': 1,
+    '2.0': 2,
+    '2': 2,
+    '3.0': 3,
+    '3': 3
 }
 
 
-def transCoding() -> Tuple[torch.Tensor, torch.Tensor,int]:
-    havaShowed = []
+def readFromFile(pathPrefix: str) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, int]:
+    X_b = pd.read_csv(pathPrefix+'X_b.csv')
+    Y_b = pd.read_csv(pathPrefix+'Y_b.csv')
+    X_test = pd.read_csv(pathPrefix+'X_test.csv')
+    Y_test = pd.read_csv(pathPrefix+'Y_test.csv')
+    return torch.tensor(Y_b.values).t()[0], torch.tensor(X_b.values),  torch.tensor(Y_test.values).t()[0], torch.tensor(X_test.values), X_b.shape[1]
+
+
+def saveToFile(pathPrefix: str, dataDict: dict) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, int]:
+    for key in dataDict.keys():
+        dataDict[key].to_csv(pathPrefix+key+'.csv', index=False)
+
+# 使用欠采样数据
+
+
+def underSamplingTransCoding() -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, int]:
+    if os.path.exists('../data/UNDERSAMPLING/X_b.csv'):
+        return readFromFile('../data/UNDERSAMPLING/')
     global absolutePath
-    merged_data = pd.read_csv(absolutePath)
-    merged_data = merged_data.drop(['reputation', 'Unnamed: 0', 'ID'], axis=1)
+    merged_data = pd.read_csv('../data/undersampling.csv')
+    merged_data = merged_data.drop(['Unnamed: 0', 'ID'], axis=1)
     merged_data.dropna(axis=0, how='any', inplace=True)
     merged_data = merged_data.replace(transCodingDict)
-    tensor_data = torch.tensor(merged_data.values)
-    resultTensor = tensor_data[:,-1]
-    print('resultTensor:',resultTensor)
-    dataTensor = tensor_data[:,:-1]
-    print('dataTensor:',dataTensor)
-    print('n_features:',dataTensor.shape[1])
-    return resultTensor,dataTensor,dataTensor.shape[1]
+    result = merged_data['target']
+    data = merged_data.drop(['target'], axis=1)
+    X_b, X_test, Y_b, Y_test = train_test_split(
+        data, result, test_size=0.1)
+    saveToFile('../data/UNDERSAMPLING/',
+               {'X_b': X_b, 'Y_b': Y_b, 'X_test': X_test, 'Y_test': Y_test})
+    return torch.tensor(Y_b.values), torch.tensor(X_b.values),  torch.tensor(Y_test.values), torch.tensor(X_test.values), X_b.shape[1]
+
+##SMOTE+ENN##
 
 
+def returnDealedData() -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, int]:
+    if os.path.exists('../data/SMOTEENN/X_b.csv'):
+        return readFromFile('../data/SMOTEENN/')
+    credit = pd.read_csv('../data/featureEngineering.csv') #此处是用的数据已经经过特征工程处理
+    credit = pd.get_dummies(credit)
+    feat_cols = credit.columns.to_list()
+    feat_cols.remove('ID')
+    feat_cols.remove('target')
+    X, Y = credit[feat_cols], credit['target']
+    X = X.drop(['Unnamed: 0'], axis=1)
+    Y = Y.astype(int)
+    # X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3)
+    # X_b, Y_b = SMOTEENN().fit_resample(X_train, Y_train)
+    X, Y = SMOTEENN().fit_resample(X, Y)
+    X_b, X_test, Y_b, Y_test = train_test_split(X, Y, test_size=0.1)
+    saveToFile('../data/SMOTEENN/',
+               {'X_b': X_b, 'Y_b': Y_b, 'X_test': X_test, 'Y_test': Y_test})
+    return torch.tensor(Y_b.values), torch.tensor(X_b.values),  torch.tensor(Y_test.values), torch.tensor(X_test.values), X_b.shape[1]
 
 
+##TEST##
 if __name__ == '__main__':
-    transCoding()
+    print(underSamplingTransCoding())
+    print('===========================')
+    print(returnDealedData())
+    print('===========================')

@@ -4,8 +4,8 @@ import pandas as pd
 from sklearn import preprocessing
 
 # datasets
-appdata_file_name = '../data/application_record.csv'
-record_file_name = '../data/credit_record.csv'
+appdata_file_name = '../data/ORIGIN/application_record.csv'
+record_file_name = '../data/ORIGIN/credit_record.csv'
 
 
 # read and clean up the datasets
