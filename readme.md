@@ -36,3 +36,51 @@
 | ID             | 客户号   |                                                                                                                                      |
 | MONTHS_BALANCE | 记录月份 | 已抽取数据月份为起点，向前倒退，0为当月，-1为前一个月，依次类推                                                                      |
 | STATUS         | 状态     | 0:1-29 天逾期<br/> 1:30-59 天逾期 <br/>2:60-89 天逾期<br/> 3:90-119 天逾期<br/> 4:120-149 天逾期<br/> 5:150天以上逾期或坏账、核销<br/> C: 当月已还清<br/> X: 当月无借款<br/> |
+
+
+## **项目目录结构**
+
+```
+├─.DS_Store  
+├─introduction.ipynb  //说明文件
+├─README.md  
+├─src  
+|  ├─trainedModel  //各个模型训练好之后导出的外部存储文件
+|  |      ├─dnn.pt  
+|  |      ├─lightgbm.pickle  
+|  |      ├─lr.pickle  
+|  |      ├─rf.pickle  
+|  |      ├─svc.pickle  
+|  |      └xg.pickle  
+|  ├─TraditionalAlgorithm  //传统机器学习算法
+|  |          ├─.DS_Store 
+|  |          ├─fraud_detection.ipynb //各个算法的ipy
+|  |          ├─fraud_detection.py //各个算法的py
+|  |          ├─ml_detection.ipynb //数据统计和处理的ipy
+|  |          ├─xb_fraud_detection.ipynb //xgboost
+|  |          ├─.ipynb_checkpoints
+|  |          |         └fraud_detection-checkpoint.ipynb //运行结果
+|  ├─DNN  //DNN多层神经网络
+|  |  ├─annealingTuning.py  //退火超参数寻优
+|  |  ├─bpNeuralNetworks.py //bp神经网络
+|  |  ├─confusionMatrix.py //混淆矩阵
+|  |  ├─originalDataInfo.py //原数据信息统计
+|  |  ├─transCoding.py //编码
+├─data //数据
+|  ├─credit.csv //原始数据的合并
+|  ├─featureEngineering.csv //特征工程之后的数据
+|  ├─undersampling.csv //欠采样数据
+|  ├─UNDERSAMPLING //欠采样数据的DataFrames直接导出
+|  |       ├─X_b.csv
+|  |       ├─X_test.csv
+|  |       ├─Y_b.csv
+|  |       └Y_test.csv
+|  ├─SMOTEENN //SMOTE+ENN的DataFrames直接导出
+|  |    ├─X_b.csv
+|  |    ├─X_test.csv
+|  |    ├─Y_b.csv
+|  |    └Y_test.csv
+|  ├─ORIGIN //原始数据
+|  |   ├─application_record.csv
+|  |   └credit_record.csv
+```
