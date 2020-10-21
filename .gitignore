@@ -1,6 +1,5 @@
 # directoris
 .idea/
 # useless files
-*.csv
 *.tmp
 __pycache__/
