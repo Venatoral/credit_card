@@ -1,6 +1,5 @@
 # directoris
 .idea/
-data/
 # useless files
 *.csv
 *.tmp
