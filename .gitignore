@@ -2,4 +2,8 @@
 .idea/
 # useless files
 *.tmp
+*.docx
+*.doc
+resultOne.csv
+web
 __pycache__/
