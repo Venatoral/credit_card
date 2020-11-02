@@ -4,7 +4,7 @@
 
 ### **[数据集来源](https://www.kaggle.com/rikdifos/credit-card-approval-prediction)**
 
-### **[产品使用地址](http://uestczyj.com:5002)**
+### **[Demo使用以及过程论文](http://uestczyj.com:5002)**
 
 <br/>
 
